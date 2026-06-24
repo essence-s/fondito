@@ -1,6 +1,5 @@
 use slint::{ComponentHandle, Image, Model, ModelRc, SharedString, VecModel};
 use crate::config;
-use crate::wallpaper;
 
 pub struct WallpaperPickerController;
 

@@ -4,7 +4,6 @@ spell_framework::generate_widgets![WallpaperPickerWindow];
 mod app;
 mod config;
 mod ui;
-mod wallpaper;
 
 use spell_framework::{
     cast_spell,
