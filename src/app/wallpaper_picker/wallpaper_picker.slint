@@ -1,0 +1,63 @@
+export struct WallpaperItem {
+    file-name: string,
+    file-url: image,
+    is-video: bool,
+    dominant-color: string,
+}
+
+export global WallpaperPickerAdapter {
+    in-out property <[WallpaperItem]> wallpaper-model;
+    in-out property <int> current-index;
+    in-out property <string> current-filter: "All";
+    in-out property <bool> is-ready;
+
+    callback navigate-left;
+    callback navigate-right;
+    callback apply-current;
+    callback escape-pressed;
+}
+
+export component WallpaperPickerWindow inherits Window {
+    background: #10101035;
+    no-frame: true;
+    forward-focus: my-focus;
+
+    touch_area := TouchArea {
+        opacity: touch_area.has-hover ? 1.0 : 0.999;
+        Rectangle {
+
+            Text {
+                text: "Hola";
+                color: #f6f8ff;
+                font-size: 24px;
+                font-weight: 700;
+                font-family: "JetBrains Mono";
+                horizontal-alignment: center;
+                vertical-alignment: center;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+
+    //  Recibe los eventos de teclado, esc para salir etc...
+    my-focus := FocusScope {
+        key-pressed(event) => {
+            if (event.text == Key.LeftArrow) {
+                WallpaperPickerAdapter.navigate-left();
+                accept;
+            } else if (event.text == Key.RightArrow) {
+                WallpaperPickerAdapter.navigate-right();
+                accept;
+            } else if (event.text == Key.Return) {
+                WallpaperPickerAdapter.apply-current();
+                accept;
+            } else if (event.text == Key.Escape) {
+                WallpaperPickerAdapter.escape-pressed();
+                accept;
+            } else {
+                reject;
+            }
+        }
+    }
+}
