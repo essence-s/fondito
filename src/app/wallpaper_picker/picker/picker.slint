@@ -1,0 +1,73 @@
+import { HorizontalBox } from "std-widgets.slint";
+import { WallpaperCard } from "./card.slint";
+
+export struct WallpaperItem {
+    file-name: string,
+    file-url: image,
+    is-video: bool,
+    dominant-color: string,
+}
+
+export global PickerAdapter {
+    in-out property <[WallpaperItem]> wallpaper-model;
+    in-out property <int> current-index;
+
+    callback navigate-left;
+    callback navigate-right;
+    callback apply-current;
+    callback card-clicked(int);
+}
+
+export component Picker {
+    callback escape-pressed;
+
+    property <length> item-base-w: 400px;
+    property <length> item-base-h: 420px;
+    property <length> spacing: 10px;
+
+    forward-focus: focus-scope;
+
+    focus-scope := FocusScope {
+        // focus-on-click: false;
+        key-pressed(event) => {
+            if (event.text == Key.LeftArrow) {
+                PickerAdapter.navigate-left();
+                accept;
+            } else if (event.text == Key.RightArrow) {
+                PickerAdapter.navigate-right();
+                accept;
+            } else if (event.text == Key.Return) {
+                PickerAdapter.apply-current();
+                accept;
+            } else if (event.text == Key.Escape) {
+                root.escape-pressed();
+                accept;
+            } else {
+                reject;
+            }
+        }
+
+        Flickable {
+            width: 100%;
+            height: 50%;
+            interactive: true;
+
+            HorizontalBox {
+                padding-left: (parent.width - (item-base-w * 1.5 + spacing)) / 2;
+                padding-right: (parent.width - (item-base-w * 1.5 + spacing)) / 2;
+                spacing: spacing;
+
+                for item[idx] in PickerAdapter.wallpaper-model: WallpaperCard {
+                    file-url: item.file-url;
+                    is-video: item.is-video;
+                    is-current: idx == PickerAdapter.current-index;
+
+                    clicked => {
+                        PickerAdapter.card-clicked(idx);
+                        // focus-scope.focus();
+                    }
+                }
+            }
+        }
+    }
+}

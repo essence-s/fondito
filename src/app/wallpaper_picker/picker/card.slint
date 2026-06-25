@@ -1,0 +1,66 @@
+export component WallpaperCard {
+    in property <image> file-url;
+    in property <bool> is-video;
+    in property <bool> is-current;
+
+    callback clicked;
+
+    property <length> base-w: 400px;
+    property <length> base-h: 420px;
+    property <length> target-w: is-current ? base-w * 1.5 : base-w * 0.5;
+    property <length> target-h: is-current ? base-h + 30px : base-h;
+    property <length> spacing: 10px;
+
+    width: target-w + spacing;
+    height: target-h;
+    opacity: is-current ? 1.0 : 0.6;
+
+    animate width { duration: 500ms; easing: ease-in-out-quad; }
+    animate height { duration: 500ms; easing: ease-in-out-quad; }
+    animate opacity { duration: 500ms; easing: ease-in-out-quad; }
+
+    Rectangle {
+        width: 100%;
+        height: 100%;
+        background: transparent;
+
+        Rectangle {
+            x: 1px;
+            y: 1px;
+            width: parent.width - 2px;
+            height: parent.height - 2px;
+            background: #1e1e2e;
+            clip: true;
+
+            Image {
+                source: file-url;
+                width: 100%;
+                height: 100%;
+                image-fit: cover;
+            }
+
+            Rectangle {
+                visible: is-video;
+                x: parent.width - 42px;
+                y: 10px;
+                width: 32px;
+                height: 32px;
+                border-radius: 6px;
+                background: #1e1e2e;
+                opacity: 0.6;
+
+                Image {
+                    source: @image-url("../../../../assets/icons/play-triangle.svg");
+                    width: 14px;
+                    height: 14px;
+                    x: (parent.width - 14px) / 2;
+                    y: (parent.height - 14px) / 2;
+                }
+            }
+
+            ta := TouchArea {
+                clicked => { root.clicked(); }
+            }
+        }
+    }
+}
