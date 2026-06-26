@@ -1,4 +1,3 @@
-import { HorizontalBox } from "std-widgets.slint";
 import { WallpaperCard } from "./card.slint";
 
 export struct WallpaperItem {
@@ -36,6 +35,7 @@ export global PickerAdapter {
         },
     ];
     in-out property <int> current-index;
+    in-out property <int> wallpaper-count;
 
     callback navigate-left;
     callback navigate-right;
@@ -46,65 +46,54 @@ export global PickerAdapter {
 export component Picker {
     callback escape-pressed;
 
-    property <length> item-base-w: 400px;
+    property <length> item-base-w: 500px;
     property <length> item-base-h: 420px;
     property <length> spacing: 10px;
-    property <int> tracked-idx: PickerAdapter.current-index;
-    changed tracked-idx => {
-        let count = PickerAdapter.wallpaper-model.length;
-        if count > 0 {
-            let ncw = root.item-base-w / 2 + root.spacing;
-            let cw = root.item-base-w * 3 / 2 + root.spacing;
-            let left = tracked-idx * ncw;
-            let center = left + cw / 2;
-            let target = center - flickable.width / 2;
-            let total = (count - 1) * ncw + cw;
-            let max = total - flickable.width;
-            flickable.viewport-x = target < 0px ? 0px : max > 0px && target > max ? max : target;
-        }
-    }
+    property <length> item-w-nc: item-base-w / 2;
+    property <length> item-w-c: item-base-w * 3 / 2;
+    property <length> total-w: (PickerAdapter.wallpaper-count - 1) * (item-w-nc + spacing) + item-w-c;
+    property <length> target-x: viewport-clip.width / 2 - (PickerAdapter.current-index * (item-w-nc + spacing) + item-w-c / 2);
+    property <length> content-x: viewport-clip.width <= 0px ? 0px : total-w <= viewport-clip.width ? (viewport-clip.width - total-w) / 2 : target-x > 0px ? 0px : target-x < viewport-clip.width - total-w ? viewport-clip.width - total-w : target-x;
 
     forward-focus: focus-scope;
 
     focus-scope := FocusScope {
         key-pressed(event) => {
-            if (event.text == Key.LeftArrow) {
-                PickerAdapter.navigate-left();
-                accept;
-            } else if (event.text == Key.RightArrow) {
-                PickerAdapter.navigate-right();
-                accept;
-            } else if (event.text == Key.Return) {
-                PickerAdapter.apply-current();
-                accept;
-            } else if (event.text == Key.Escape) {
-                root.escape-pressed();
-                accept;
-            } else {
-                reject;
-            }
+            if (event.text == Key.LeftArrow) { PickerAdapter.navigate-left(); accept; }
+            else if (event.text == Key.RightArrow) { PickerAdapter.navigate-right(); accept; }
+            else if (event.text == Key.Return) { PickerAdapter.apply-current(); accept; }
+            else if (event.text == Key.Escape) { root.escape-pressed(); accept; }
+            else { reject; }
         }
 
-        flickable := Flickable {
-            width: parent.width;
-            height: parent.height;
-            interactive: true;
+        viewport-clip := Rectangle {
+            width: 100%;
+            height: 100%;
+            clip: true;
+            background: transparent;
+            VerticalLayout {
+                alignment: center;
+                content := Rectangle {
+                    x: root.content-x;
+                    width: root.total-w;
 
-            animate viewport-x {
-                duration: 300ms;
-                easing: ease-out;
-            }
+                    animate x {
+                        duration: 400ms;
+                        easing: ease-out;
+                    }
 
-            HorizontalBox {
-                spacing: spacing;
+                    HorizontalLayout {
+                        spacing: spacing;
 
-                for item[idx] in PickerAdapter.wallpaper-model: WallpaperCard {
-                    file-url: item.file-url;
-                    is-video: item.is-video;
-                    is-current: idx == PickerAdapter.current-index;
+                        for item[idx] in PickerAdapter.wallpaper-model: WallpaperCard {
+                            file-url: item.file-url;
+                            is-video: item.is-video;
+                            is-current: idx == PickerAdapter.current-index;
 
-                    clicked => {
-                        PickerAdapter.card-clicked(idx);
+                            clicked => {
+                                PickerAdapter.card-clicked(idx);
+                            }
+                        }
                     }
                 }
             }

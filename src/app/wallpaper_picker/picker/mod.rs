@@ -37,6 +37,7 @@ impl PickerController {
         ];
 
         adapter.set_wallpaper_model(model.clone());
+        adapter.set_wallpaper_count(model.row_count() as i32);
         adapter.set_current_index(0);
 
         adapter.on_navigate_left({

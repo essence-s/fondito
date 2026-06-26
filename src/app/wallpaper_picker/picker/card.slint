@@ -9,22 +9,20 @@ export component WallpaperCard {
     property <length> base-h: 420px;
     property <length> target-w: is-current ? base-w * 1.5 : base-w * 0.5;
     property <length> target-h: is-current ? base-h + 30px : base-h;
-    property <length> spacing: 10px;
-
-    width: target-w + spacing;
+    width: target-w;
     height: target-h;
     opacity: is-current ? 1.0 : 0.8;
 
     animate width {
-        duration: 500ms;
+        duration: 400ms;
         easing: ease-in-out-quad;
     }
     animate height {
-        duration: 500ms;
+        duration: 400ms;
         easing: ease-in-out-quad;
     }
     animate opacity {
-        duration: 500ms;
+        duration: 400ms;
         easing: ease-in-out-quad;
     }
 
