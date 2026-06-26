@@ -9,7 +9,32 @@ export struct WallpaperItem {
 }
 
 export global PickerAdapter {
-    in-out property <[WallpaperItem]> wallpaper-model;
+    in-out property <[WallpaperItem]> wallpaper-model: [
+        {
+            file-name: "Mountains",
+            file-url: @image-url("../../../../assets/icons/play-triangle.svg"),
+            is-video: false,
+            dominant-color: "#4A90D9"
+        },
+        {
+            file-name: "Sunset",
+            file-url: @image-url("../../../../assets/icons/play-triangle.svg"),
+            is-video: false,
+            dominant-color: "#FF6B35"
+        },
+        {
+            file-name: "Forest",
+            file-url: @image-url("../../../../assets/icons/play-triangle.svg"),
+            is-video: false,
+            dominant-color: "#2D8A4E"
+        },
+        {
+            file-name: "Video 1",
+            file-url: @image-url("../../../../assets/icons/play-triangle.svg"),
+            is-video: true,
+            dominant-color: "#A9A9A9"
+        },
+    ];
     in-out property <int> current-index;
 
     callback navigate-left;
@@ -24,11 +49,24 @@ export component Picker {
     property <length> item-base-w: 400px;
     property <length> item-base-h: 420px;
     property <length> spacing: 10px;
+    property <int> tracked-idx: PickerAdapter.current-index;
+    changed tracked-idx => {
+        let count = PickerAdapter.wallpaper-model.length;
+        if count > 0 {
+            let ncw = root.item-base-w / 2 + root.spacing;
+            let cw = root.item-base-w * 3 / 2 + root.spacing;
+            let left = tracked-idx * ncw;
+            let center = left + cw / 2;
+            let target = center - flickable.width / 2;
+            let total = (count - 1) * ncw + cw;
+            let max = total - flickable.width;
+            flickable.viewport-x = target < 0px ? 0px : max > 0px && target > max ? max : target;
+        }
+    }
 
     forward-focus: focus-scope;
 
     focus-scope := FocusScope {
-        // focus-on-click: false;
         key-pressed(event) => {
             if (event.text == Key.LeftArrow) {
                 PickerAdapter.navigate-left();
@@ -47,14 +85,17 @@ export component Picker {
             }
         }
 
-        Flickable {
-            width: 100%;
-            height: 50%;
+        flickable := Flickable {
+            width: parent.width;
+            height: parent.height;
             interactive: true;
 
+            animate viewport-x {
+                duration: 300ms;
+                easing: ease-out;
+            }
+
             HorizontalBox {
-                padding-left: (parent.width - (item-base-w * 1.5 + spacing)) / 2;
-                padding-right: (parent.width - (item-base-w * 1.5 + spacing)) / 2;
                 spacing: spacing;
 
                 for item[idx] in PickerAdapter.wallpaper-model: WallpaperCard {
@@ -64,7 +105,6 @@ export component Picker {
 
                     clicked => {
                         PickerAdapter.card-clicked(idx);
-                        // focus-scope.focus();
                     }
                 }
             }

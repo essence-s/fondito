@@ -5,7 +5,7 @@ export component WallpaperCard {
 
     callback clicked;
 
-    property <length> base-w: 400px;
+    property <length> base-w: 500px;
     property <length> base-h: 420px;
     property <length> target-w: is-current ? base-w * 1.5 : base-w * 0.5;
     property <length> target-h: is-current ? base-h + 30px : base-h;
@@ -13,11 +13,20 @@ export component WallpaperCard {
 
     width: target-w + spacing;
     height: target-h;
-    opacity: is-current ? 1.0 : 0.6;
+    opacity: is-current ? 1.0 : 0.8;
 
-    animate width { duration: 500ms; easing: ease-in-out-quad; }
-    animate height { duration: 500ms; easing: ease-in-out-quad; }
-    animate opacity { duration: 500ms; easing: ease-in-out-quad; }
+    animate width {
+        duration: 500ms;
+        easing: ease-in-out-quad;
+    }
+    animate height {
+        duration: 500ms;
+        easing: ease-in-out-quad;
+    }
+    animate opacity {
+        duration: 500ms;
+        easing: ease-in-out-quad;
+    }
 
     Rectangle {
         width: 100%;

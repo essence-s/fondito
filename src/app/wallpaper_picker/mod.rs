@@ -1,4 +1,5 @@
 pub mod picker;
+pub mod services;
 
 use slint::ComponentHandle;
 
