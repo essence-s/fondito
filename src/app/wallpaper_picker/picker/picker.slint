@@ -48,12 +48,16 @@ export component Picker {
 
     property <length> item-base-w: 500px;
     property <length> item-base-h: 420px;
+    property <float> ratio-nc: 0.3;
+    property <float> ratio-c: 1.5;
     property <length> spacing: 10px;
-    property <length> item-w-nc: item-base-w / 2;
-    property <length> item-w-c: item-base-w * 3 / 2;
-    property <length> total-w: (PickerAdapter.wallpaper-count - 1) * (item-w-nc + spacing) + item-w-c;
-    property <length> target-x: viewport-clip.width / 2 - (PickerAdapter.current-index * (item-w-nc + spacing) + item-w-c / 2);
-    property <length> content-x: viewport-clip.width <= 0px ? 0px : total-w <= viewport-clip.width ? (viewport-clip.width - total-w) / 2 : target-x > 0px ? 0px : target-x < viewport-clip.width - total-w ? viewport-clip.width - total-w : target-x;
+    property <length> item-w-nc: item-base-w * ratio-nc;
+    property <length> item-w-c: item-base-w * ratio-c;
+    property <length> pitch: item-w-nc + spacing;
+    property <length> half-vp: viewport-clip.width / 2;
+    property <length> total-w: (PickerAdapter.wallpaper-count - 1) * pitch + item-w-c;
+    property <length> target-x: half-vp - (PickerAdapter.current-index * pitch + item-w-c / 2);
+    property <length> content-x: half-vp <= 0px ? 0px : total-w <= 2 * half-vp ? half-vp - total-w / 2 : target-x > 0px ? 0px : target-x < 2 * half-vp - total-w ? 2 * half-vp - total-w : target-x;
 
     forward-focus: focus-scope;
 
@@ -86,6 +90,10 @@ export component Picker {
                         spacing: spacing;
 
                         for item[idx] in PickerAdapter.wallpaper-model: WallpaperCard {
+                            card-w-nc: root.item-w-nc;
+                            card-w-c: root.item-w-c;
+                            card-h-nc: root.item-base-h;
+                            card-h-c: root.item-base-h;
                             file-url: item.file-url;
                             is-video: item.is-video;
                             is-current: idx == PickerAdapter.current-index;

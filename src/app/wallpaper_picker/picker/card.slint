@@ -2,29 +2,30 @@ export component WallpaperCard {
     in property <image> file-url;
     in property <bool> is-video;
     in property <bool> is-current;
+    in property <length> card-w-nc;
+    in property <length> card-w-c;
+    in property <length> card-h-nc;
+    in property <length> card-h-c;
 
     callback clicked;
 
-    property <length> base-w: 500px;
-    property <length> base-h: 420px;
-    property <length> target-w: is-current ? base-w * 1.5 : base-w * 0.5;
-    property <length> target-h: is-current ? base-h + 30px : base-h;
-    width: target-w;
-    height: target-h;
-    opacity: is-current ? 1.0 : 0.8;
+    property <length> card-w: is-current ? card-w-c : card-w-nc;
+    property <length> card-h: is-current ? card-h-c : card-h-nc;
+    width: card-w;
+    height: card-h;
 
     animate width {
         duration: 400ms;
         easing: ease-in-out-quad;
     }
-    animate height {
-        duration: 400ms;
-        easing: ease-in-out-quad;
-    }
-    animate opacity {
-        duration: 400ms;
-        easing: ease-in-out-quad;
-    }
+    // animate height {
+    //     duration: 400ms;
+    //     easing: ease-in-out-quad;
+    // }
+    // animate opacity {
+    //     duration: 400ms;
+    //     easing: ease-in-out-quad;
+    // }
 
     Rectangle {
         width: 100%;
@@ -53,8 +54,8 @@ export component WallpaperCard {
                 width: 32px;
                 height: 32px;
                 border-radius: 6px;
-                background: #1e1e2e;
-                opacity: 0.6;
+                background: #2c2c2c;
+                opacity: 0.5;
 
                 Image {
                     source: @image-url("../../../../assets/icons/play-triangle.svg");
