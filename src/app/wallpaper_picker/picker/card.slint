@@ -7,6 +7,8 @@ export component WallpaperCard {
     in property <length> card-h-nc;
     in property <length> card-h-c;
 
+    property <length> skew: 28px;
+
     callback clicked;
 
     property <length> card-w: is-current ? card-w-c : card-w-nc;
@@ -18,14 +20,6 @@ export component WallpaperCard {
         duration: 400ms;
         easing: ease-in-out-quad;
     }
-    // animate height {
-    //     duration: 400ms;
-    //     easing: ease-in-out-quad;
-    // }
-    // animate opacity {
-    //     duration: 400ms;
-    //     easing: ease-in-out-quad;
-    // }
 
     Rectangle {
         width: 100%;
@@ -37,7 +31,7 @@ export component WallpaperCard {
             y: 1px;
             width: parent.width - 2px;
             height: parent.height - 2px;
-            background: #1e1e2e;
+            background: #303030;
             clip: true;
 
             Image {
@@ -45,6 +39,95 @@ export component WallpaperCard {
                 width: 100%;
                 height: 100%;
                 image-fit: cover;
+            }
+
+            Path {
+                x: 0px;
+                y: 0px;
+                width: skew-clamped;
+                height: 100%;
+                fill: #303030;
+                fit: fill;
+                viewbox-width: 1;
+                viewbox-height: 1;
+                MoveTo {
+                    x: 0;
+                    y: 0;
+                }
+
+                LineTo {
+                    x: 1;
+                    y: 0;
+                }
+
+                LineTo {
+                    x: 0;
+                    y: 1;
+                }
+
+                Close { }
+            }
+
+            Path {
+                x: parent.width - skew-clamped;
+                y: 0px;
+                width: skew-clamped;
+                height: 100%;
+                fill: #303030;
+                fit: fill;
+                viewbox-width: 1;
+                viewbox-height: 1;
+                MoveTo {
+                    x: 1;
+                    y: 0;
+                }
+
+                LineTo {
+                    x: 1;
+                    y: 1;
+                }
+
+                LineTo {
+                    x: 0;
+                    y: 1;
+                }
+
+                Close { }
+            }
+
+            property <length> skew-clamped: min(skew, self.width / 2);
+            property <float> skew-r: skew-clamped / self.width;
+
+            Path {
+                width: 100%;
+                height: 100%;
+                fill: transparent;
+                stroke: rgba(255, 255, 255, 0.6);
+                stroke-width: 2px;
+                fit: fill;
+                viewbox-width: 1;
+                viewbox-height: 1;
+                MoveTo {
+                    x: skew-r;
+                    y: 0;
+                }
+
+                LineTo {
+                    x: 1;
+                    y: 0;
+                }
+
+                LineTo {
+                    x: 1 - skew-r;
+                    y: 1;
+                }
+
+                LineTo {
+                    x: 0;
+                    y: 1;
+                }
+
+                Close { }
             }
 
             Rectangle {
