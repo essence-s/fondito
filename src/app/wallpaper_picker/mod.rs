@@ -14,5 +14,13 @@ impl WallpaperPickerController {
                 std::process::exit(0);
             }
         });
+
+        let weak = window.as_weak();
+        slint::Timer::single_shot(std::time::Duration::from_millis(20), move || {
+            if let Some(win) = weak.upgrade() {
+                let adapter = win.global::<crate::WallpaperPickerAdapter>();
+                adapter.set_render_trigger(1);
+            }
+        });
     }
 }

@@ -2,7 +2,7 @@ import { WallpaperItem, Picker } from "./picker/picker.slint";
 
 export { WallpaperItem }
 export global WallpaperPickerAdapter {
-    in-out property <bool> is-ready;
+    in-out property <int> render-trigger;
     callback escape-pressed;
 }
 
@@ -12,8 +12,8 @@ export component WallpaperPickerWindow inherits Window {
 
     forward-focus: p;
 
-    touch_area := TouchArea {
-        opacity: touch_area.has-hover ? 1.0 : 0.999;
+    TouchArea {
+        opacity: WallpaperPickerAdapter.render-trigger == 0 ? 0.999 : 1.0;
         p := Picker {
             width: 100%;
             height: 100%;
