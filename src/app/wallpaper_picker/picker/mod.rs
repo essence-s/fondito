@@ -5,7 +5,7 @@ use crate::app::wallpaper_picker::services;
 pub struct PickerController;
 
 impl PickerController {
-    pub fn connect(window: &crate::WallpaperPickerWindowSpell) {
+    pub fn connect(window: &crate::WallpaperPickerWindowWl) {
         let adapter = window.global::<crate::PickerAdapter>();
         let weak = window.as_weak();
 

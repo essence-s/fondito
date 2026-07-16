@@ -6,7 +6,7 @@ use slint::ComponentHandle;
 pub struct WallpaperPickerController;
 
 impl WallpaperPickerController {
-    pub fn connect(window: &crate::WallpaperPickerWindowSpell) {
+    pub fn connect(window: &crate::WallpaperPickerWindowWl) {
         let adapter = window.global::<crate::WallpaperPickerAdapter>();
 
         adapter.on_escape_pressed({

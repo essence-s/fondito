@@ -1,12 +1,12 @@
 slint::include_modules!();
-spell_framework::generate_widgets![WallpaperPickerWindow];
+slint_layer_shell::windows![WallpaperPickerWindow];
 
 mod app;
 mod config;
 mod ui;
 
-use spell_framework::{
-    cast_spell,
+use slint_layer_shell::{
+    run_windows,
     layer_properties::{LayerAnchor, LayerType, WindowConf, BoardType},
 };
 
@@ -30,11 +30,11 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         .build()
         .unwrap();
 
-    let picker = WallpaperPickerWindowSpell::invoke_spell("fondito", picker_conf);
+    let picker = WallpaperPickerWindowWl::spawn("fondito", picker_conf);
 
     ui::adapters::connect_all(&picker);
 
     log::info!("=== fondito running ===");
-    cast_spell!(windows: [picker])?;
+    run_windows!(windows: [picker])?;
     Ok(())
 }
